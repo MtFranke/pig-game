@@ -32,13 +32,16 @@ function buttonRollListener() {
     if (rolledNumber !== 1) {
         addToCurrentScore(rolledNumber);
     } else {
-        removeCurrentScoreAndSwitch();
+        switchPlayer();
     }
 
 }
 
 function buttonHoldListener() {
 
+    scores[activePlayer] += currentScore;
+    document.getElementById(`score--${activePlayer}`).textContent = scores[activePlayer];
+    switchPlayer();
 }
 
 function showRolledDice(number) {
@@ -61,15 +64,13 @@ function addToCurrentScore(rolledNumber) {
     document.getElementById(`current--${activePlayer}`).textContent = currentScore;
 }
 
-function removeCurrentScoreAndSwitch() {
-
+function switchPlayer() {
     document.getElementById(`current--${activePlayer}`).textContent = 0;
     activePlayer = activePlayer === 0 ? 1 : 0;
     currentScore = 0;
     player0El.classList.toggle('player--active');
     player1El.classList.toggle('player--active');
 }
-
 
 
 // listeners
