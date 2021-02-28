@@ -18,7 +18,9 @@ const diceImg = document.querySelector('.dice');
 //
 let activePlayer = 0;
 let currentScore = 0;
+const winCondition = 100;
 const scores = [0, 0];
+let isGameActive = true;
 
 initGame();
 
@@ -27,24 +29,29 @@ function roll() {
     return number;
 }
 function buttonRollListener() {
-    const rolledNumber = roll();
-    showRolledDice(rolledNumber);
-    if (rolledNumber !== 1) {
-        addToCurrentScore(rolledNumber);
-    } else {
-        switchPlayer();
+    if (isGameActive) {
+        const rolledNumber = roll();
+        showRolledDice(rolledNumber);
+        if (rolledNumber !== 1) {
+            addToCurrentScore(rolledNumber);
+        } else {
+            switchPlayer();
+        }
     }
-
 }
 
 function buttonHoldListener() {
 
-    scores[activePlayer] += currentScore;
-    document.getElementById(`score--${activePlayer}`).textContent = scores[activePlayer];
-    if(scores[activePlayer] >= 10){
-        document.querySelector(`.player--${activePlayer}`).classList.add('player--winner');
-        document.querySelector(`.player--${activePlayer}`).classList.remove('player--active');
-    }else switchPlayer();
+    if (isGameActive) {
+        scores[activePlayer] += currentScore;
+        document.getElementById(`score--${activePlayer}`).textContent = scores[activePlayer];
+        if (scores[activePlayer] >= winCondition) {
+            isGameActive = false;
+            diceImg.classList.add('hidden');
+            document.querySelector(`.player--${activePlayer}`).classList.add('player--winner');
+            document.querySelector(`.player--${activePlayer}`).classList.remove('player--active');
+        } else switchPlayer();
+    }
 }
 
 function showRolledDice(number) {
@@ -59,6 +66,16 @@ function initGame() {
     player1ScoreElement.textContent = '0';
     player0CurrentScoreElement.textContent = '0';
     player1CurrentScoreElement.textContent = '0';
+    isGameActive = true;
+    document.querySelector(`.player--1`).classList.remove('player--winner');
+    document.querySelector(`.player--0`).classList.remove('player--winner');
+    scores[0] = 0;
+    scores[1] = 0;
+    currentScore = 0;
+    activePlayer = 0;
+    document.querySelector(`.player--0`).classList.add('player--active');
+    document.querySelector(`.player--1`).classList.remove('player--active');
+
 }
 
 function addToCurrentScore(rolledNumber) {
@@ -79,3 +96,4 @@ function switchPlayer() {
 // listeners
 buttonRoll.addEventListener('click', buttonRollListener);
 buttonHold.addEventListener('click', buttonHoldListener);
+buttonNewGame.addEventListener('click', initGame);
